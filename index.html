@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crack The Tag</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+        }
+        main {
+            padding: 20px;
+        }
+        footer {
+            background-color: #f8f9fa;
+            padding: 20px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Crack The Tag</h1>
+    </header>
+    <main class="container">
+        <div class="row">
+            <div class="col-md-6 mx-auto">
+                <div id="participant-form">
+                    <h2>Participant Registration</h2>
+                    <form id="registration-form" method="POST" action="register.php" onsubmit="return submitForm()">
+                        <div class="form-group">
+                            <label for="participant-name">Name:</label>
+                            <input type="text" class="form-control" id="participant-name" name="participant-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="college-name">College Name:</label>
+                            <input type="text" class="form-control" id="college-name" name="college-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="mobile-number">Mobile Number:</label>
+                            <input type="tel" class="form-control" id="mobile-number" name="mobile-number" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Register</button>
+                    </form>
+                    <div id="registration-message" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-8 mx-auto">
+                <div id="question-container">
+                    <!-- Questions and timer will be dynamically added here -->
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 Crack the Tag Symposium</p>
+    </footer>
+    <script>
+        // Function to submit the registration form
+        function submitForm(event) {
+            event.preventDefault(); // Prevent the default form submission
+    
+            // Get form data
+            let formData = new FormData(document.getElementById('registration-form'));
+    
+            // Perform an AJAX request to submit the form data
+            fetch('register.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text(); // Get response text
+            })
+            .then(data => {
+                const eventTitle = 'Crack The Tag Symposium'; // Event title
+                // Display registration message with event title
+                displayRegistrationMessage(`${eventTitle}: ${data}`, 'success');
+                // Hide the registration form
+                document.getElementById('participant-form').style.display = 'none';
+                // Redirect to qustion.html after a delay (e.g., 3 seconds)
+                setTimeout(() => {
+                    window.location.href = 'question.html';
+                }, 3000); // Adjust the delay as needed
+            })
+            .catch(error => {
+                // Display error message
+                displayRegistrationMessage('Registration failed. Please try again later.', 'danger');
+            });
+        }
+    
+        // Function to display registration message
+        function displayRegistrationMessage(message, type) {
+            const registrationMessage = document.getElementById('registration-message');
+            registrationMessage.innerText = message;
+            registrationMessage.className = 'alert alert-' + type;
+            registrationMessage.style.display = 'block';
+        }
+    
+        // Load questions and start timer when the page is loaded
+        window.onload = function () {
+            fetchQuestions();
+            initializeTimer(60); // 60 seconds per question
+    
+            // Add submit event listener to the registration form
+            document.getElementById('registration-form').addEventListener('submit', submitForm);
+        };
+    </script>
+    
+    
+    
+</body>
+</html>
